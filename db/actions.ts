@@ -46,7 +46,6 @@ export const getDailyCounts = async ({
 		GROUP BY DATE("createdAt")
 		ORDER BY date ASC;
 	`;
-	console.log(dailyCounts);
 	return dailyCounts as DailyCount[];
 };
 

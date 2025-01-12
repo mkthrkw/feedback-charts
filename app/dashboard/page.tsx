@@ -8,12 +8,9 @@ export default async function Page() {
 
   const fromParam = 30;
   const toParam = 0;
-
   const now = new Date();
   const from = new Date(new Date().setDate(now.getDate() - fromParam));
   const to = new Date(new Date().setDate(now.getDate() - toParam));
-
-  console.log(from, to);
   const dailyCounts = await getDailyCounts({ from: from, to: to });
   const categoryCounts = await getCategoryCounts({ from: from, to: to });
   const sentimentCounts = await getSentimentCounts({ from: from, to: to });
