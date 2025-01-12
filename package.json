@@ -8,7 +8,9 @@
 		"start": "next start",
 		"lint": "biome lint -- apply <files>",
 		"format": "biome format <files> --write",
-		"check": "biome check --apply <files>"
+		"check": "biome check --apply <files>",
+		"postinstall": "prisma generate",
+		"vercel-build": "prisma generate && prisma migrate deploy && next build"
 	},
 	"prisma": {
 		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\",\"moduleResolution\":\"node\"} --transpile-only prisma/seed.ts"
