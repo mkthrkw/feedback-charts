@@ -3,20 +3,19 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
 import {
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
-import type { DailyCount } from "@/db/type"
-import { differenceInDays, format } from "date-fns"
-import { TrendingUp } from "lucide-react"
+import type { DailyCountAndRating } from "@/db/type"
 import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts"
 
 const chartConfig = {
@@ -24,24 +23,21 @@ const chartConfig = {
     label: "投稿数",
     color: "hsl(var(--chart-1))",
   },
+  rating: {
+    label: "評価点",
+    color: "hsl(var(--chart-2))",
+  },
 } satisfies ChartConfig
 
-export function LineChartComponent({ chartData, className }: { chartData: DailyCount[], className?: string }) {
-  const totalCount = chartData.reduce((acc, curr) => acc + curr.count, 0);
-  const averageCount = Math.round(totalCount / chartData.length);
-  const rangeFrom = chartData[0].date;
-  const rangeTo = chartData[chartData.length - 1].date;
-  const rangeFromTo = differenceInDays(rangeTo, rangeFrom);
-  const rangeDescription = `${format(rangeFrom, "yyyy/MM/dd")} - ${format(rangeTo, "yyyy/MM/dd")}  (${rangeFromTo}日間)`;
+export function LineChartComponent({ chartData, className }: { chartData: DailyCountAndRating[], className?: string }) {
 
   return (
     <Card className={className}>
       <CardHeader>
         <CardTitle>投稿数の推移</CardTitle>
-        <CardDescription>{rangeDescription}</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="w-full h-[200px]">
+        <ChartContainer config={chartConfig} className="w-full h-[150px] sm:h-[200px]">
           <LineChart
             accessibilityLayer
             data={chartData}
@@ -72,7 +68,7 @@ export function LineChartComponent({ chartData, className }: { chartData: DailyC
             />
             <Line
               dataKey="count"
-              type="natural"
+              type="monotone"
               stroke="var(--color-count)"
               strokeWidth={2}
               dot={{
@@ -89,16 +85,31 @@ export function LineChartComponent({ chartData, className }: { chartData: DailyC
                 fontSize={12}
               />
             </Line>
+            <Line
+              dataKey="rating"
+              type="monotone"
+              stroke="var(--color-rating)"
+              strokeWidth={2}
+              dot={{
+                fill: "var(--color-rating)",
+              }}
+              activeDot={{
+                r: 6,
+              }}
+            >
+              <LabelList
+                position="top"
+                offset={12}
+                className="fill-foreground"
+                fontSize={12}
+                formatter={(value: number) => `${value.toFixed(1)}`}
+              />
+            </Line>
+            <ChartLegend content={<ChartLegendContent />} />
           </LineChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          日毎平均投稿数 <span className="text-primary">{averageCount}</span> 件<TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          合計投稿数 <span className="text-primary">{totalCount}</span> 件
-        </div>
       </CardFooter>
     </Card>
   )

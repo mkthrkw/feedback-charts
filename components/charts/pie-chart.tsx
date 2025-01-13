@@ -127,10 +127,10 @@ export function PieChartComponent({ chartData, className }: { chartData: Categor
       </CardContent>
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
-          <TrendingUp className="h-4 w-4 text-green-500" />最も多い投稿： {mostPopularCategory.category}({mostPopularCategory.count.toLocaleString()})
+          <TrendingUp className="h-4 w-4 text-green-500" />最も多い投稿： {mostPopularCategory.category}({mostPopularCategory.count.toLocaleString()} 件)
         </div>
         <div className="flex items-center gap-2 leading-none text-muted-foreground">
-          <TrendingDown className="h-4 w-4 text-red-500" />最も少ない投稿： {leastPopularCategory.category}({leastPopularCategory.count.toLocaleString()})
+          <TrendingDown className="h-4 w-4 text-red-500" />最も少ない投稿： {leastPopularCategory.category}({leastPopularCategory.count.toLocaleString()} 件)
         </div>
       </CardFooter>
     </Card>
