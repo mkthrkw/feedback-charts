@@ -38,6 +38,20 @@ export const getFeedbackItems = async ({
 };
 
 /**
+ * ページ数を計算します。
+ * @param {number} pageSize - 1ページあたりのアイテム数。
+ * @returns {Promise<number>} 総ページ数を返します。
+ */
+export const getTotalPages = async ({
+	pageSize,
+}: {
+	pageSize: number;
+}): Promise<number> => {
+	const totalPages = await prisma.feedback.count();
+	return Math.ceil(totalPages / pageSize);
+};
+
+/**
  * 指定された期間内の日ごとのフィードバック数を取得します。
  * @param {Date} from - 集計を開始する日付。
  * @param {Date} to - 集計を終了する日付。
