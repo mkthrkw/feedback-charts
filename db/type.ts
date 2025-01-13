@@ -4,9 +4,10 @@ export type FeedbackWithStringDate = Omit<Feedback, "createdAt"> & {
 	createdAt: string;
 };
 
-export type DailyCount = {
+export type DailyCountAndRating = {
 	date: Date;
 	count: number;
+	rating: number;
 };
 
 export type CategoryCount = {
@@ -16,5 +17,15 @@ export type CategoryCount = {
 
 export type SentimentCount = {
 	sentiment: string;
+	count: number;
+};
+
+export type GenerationCount = {
+	generation: number;
+	count: number;
+};
+
+export type RatingCount = {
+	rating: number;
 	count: number;
 };

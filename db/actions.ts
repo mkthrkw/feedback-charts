@@ -2,8 +2,10 @@
 import { prisma } from "@/prisma/prisma";
 import type {
 	CategoryCount,
-	DailyCount,
+	DailyCountAndRating,
 	FeedbackWithStringDate,
+	GenerationCount,
+	RatingCount,
 	SentimentCount,
 } from "./type";
 
@@ -52,26 +54,26 @@ export const getTotalPages = async ({
 };
 
 /**
- * 指定された期間内の日ごとのフィードバック数を取得します。
+ * 指定された期間内の日ごとのフィードバック数と評価点の平均を取得します。
  * @param {Date} rangeFrom - 集計を開始する日付。
  * @param {Date} rangeTo - 集計を終了する日付。
- * @returns {Promise<DailyCount[]>} 日ごとのフィードバック数を含むオブジェクトの配列を返します。
+ * @returns {Promise<DailyCountAndRating[]>} 日ごとのフィードバック数と評価点の平均を含むオブジェクトの配列を返します。
  */
-export const getDailyCounts = async ({
+export const getDailyCountsAndRating = async ({
 	rangeFrom,
 	rangeTo,
 }: {
 	rangeFrom: Date;
 	rangeTo: Date;
-}): Promise<DailyCount[]> => {
-	const dailyCounts = await prisma.$queryRaw`
-		SELECT DATE("createdAt") as date, COUNT(*)::int as count
+}): Promise<DailyCountAndRating[]> => {
+	const dailyCountsAndRating = await prisma.$queryRaw`
+		SELECT DATE("createdAt") as date, COUNT(*)::int as count, AVG("rating")::float as rating
 		FROM "Feedback"
 		WHERE "createdAt" BETWEEN ${rangeFrom} AND ${rangeTo}
 		GROUP BY DATE("createdAt")
 		ORDER BY date ASC;
 	`;
-	return dailyCounts as DailyCount[];
+	return dailyCountsAndRating as DailyCountAndRating[];
 };
 
 /**
@@ -118,4 +120,50 @@ export const getSentimentCounts = async ({
 		ORDER BY sentiment ASC;
 	`;
 	return sentimentCounts as SentimentCount[];
+};
+
+/**
+ * 指定された期間内の年代ごとのフィードバック数を取得します。
+ * @param {Date} rangeFrom - 集計を開始する日付。
+ * @param {Date} rangeTo - 集計を終了する日付。
+ * @returns {Promise<GenerationCount[]>} 年代ごとのフィードバック数を含むオブジェクトの配列を返します。
+ */
+export const getGenerationCounts = async ({
+	rangeFrom,
+	rangeTo,
+}: {
+	rangeFrom: Date;
+	rangeTo: Date;
+}): Promise<GenerationCount[]> => {
+	const generationCounts = await prisma.$queryRaw`
+		SELECT ("age"/10)*10 AS generation, COUNT(*)::int as count
+		FROM "Feedback"
+		WHERE "createdAt" BETWEEN ${rangeFrom} AND ${rangeTo}
+		GROUP BY "generation"
+		ORDER BY generation ASC;
+	`;
+	return generationCounts as GenerationCount[];
+};
+
+/**
+ * 指定された期間内の評価点ごとのフィードバック数を取得します。
+ * @param {Date} rangeFrom - 集計を開始する日付。
+ * @param {Date} rangeTo - 集計を終了する日付。
+ * @returns {Promise<RatingCount[]>} 評価点ごとのフィードバック数を含むオブジェクトの配列を返します。
+ */
+export const getRatingCounts = async ({
+	rangeFrom,
+	rangeTo,
+}: {
+	rangeFrom: Date;
+	rangeTo: Date;
+}): Promise<RatingCount[]> => {
+	const ratingCounts = await prisma.$queryRaw`
+		SELECT "rating", COUNT(*)::int as count
+		FROM "Feedback"
+		WHERE "createdAt" BETWEEN ${rangeFrom} AND ${rangeTo}
+		GROUP BY "rating"
+		ORDER BY rating ASC;
+	`;
+	return ratingCounts as RatingCount[];
 };
