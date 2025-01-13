@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/chart"
 import type { ChartConfig } from "@/components/ui/chart"
 import type { DailyCount } from "@/db/type"
+import { differenceInDays, format } from "date-fns"
 import { TrendingUp } from "lucide-react"
 import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts"
 
@@ -28,13 +29,16 @@ const chartConfig = {
 export function LineChartComponent({ chartData, className }: { chartData: DailyCount[], className?: string }) {
   const totalCount = chartData.reduce((acc, curr) => acc + curr.count, 0);
   const averageCount = Math.round(totalCount / chartData.length);
-  const dailyRange = `${(new Date(chartData[0].date)).toLocaleDateString("ja-JP")} ~ ${(new Date(chartData[chartData.length - 1].date)).toLocaleDateString("ja-JP")}`;
+  const rangeFrom = chartData[0].date;
+  const rangeTo = chartData[chartData.length - 1].date;
+  const rangeFromTo = differenceInDays(rangeTo, rangeFrom);
+  const rangeDescription = `${format(rangeFrom, "yyyy/MM/dd")} - ${format(rangeTo, "yyyy/MM/dd")}  (${rangeFromTo}日間)`;
 
   return (
     <Card className={className}>
       <CardHeader>
         <CardTitle>投稿数の推移</CardTitle>
-        <CardDescription>{dailyRange}</CardDescription>
+        <CardDescription>{rangeDescription}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="w-full h-[200px]">

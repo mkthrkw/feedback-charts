@@ -53,21 +53,21 @@ export const getTotalPages = async ({
 
 /**
  * 指定された期間内の日ごとのフィードバック数を取得します。
- * @param {Date} from - 集計を開始する日付。
- * @param {Date} to - 集計を終了する日付。
+ * @param {Date} rangeFrom - 集計を開始する日付。
+ * @param {Date} rangeTo - 集計を終了する日付。
  * @returns {Promise<DailyCount[]>} 日ごとのフィードバック数を含むオブジェクトの配列を返します。
  */
 export const getDailyCounts = async ({
-	from,
-	to,
+	rangeFrom,
+	rangeTo,
 }: {
-	from: Date;
-	to: Date;
+	rangeFrom: Date;
+	rangeTo: Date;
 }): Promise<DailyCount[]> => {
 	const dailyCounts = await prisma.$queryRaw`
 		SELECT DATE("createdAt") as date, COUNT(*)::int as count
 		FROM "Feedback"
-		WHERE "createdAt" BETWEEN ${from} AND ${to}
+		WHERE "createdAt" BETWEEN ${rangeFrom} AND ${rangeTo}
 		GROUP BY DATE("createdAt")
 		ORDER BY date ASC;
 	`;
@@ -76,44 +76,44 @@ export const getDailyCounts = async ({
 
 /**
  * 指定された期間内のカテゴリごとのフィードバック数を取得します。
- * @param {Date} from - 集計を開始する日付。
- * @param {Date} to - 集計を終了する日付。
+ * @param {Date} rangeFrom - 集計を開始する日付。
+ * @param {Date} rangeTo - 集計を終了する日付。
  * @returns {Promise<CategoryCount[]>} カテゴリごとのフィードバック数を含むオブジェクトの配列を返します。
  */
 export const getCategoryCounts = async ({
-	from,
-	to,
+	rangeFrom,
+	rangeTo,
 }: {
-	from: Date;
-	to: Date;
+	rangeFrom: Date;
+	rangeTo: Date;
 }): Promise<CategoryCount[]> => {
 	const categoryCounts = await prisma.$queryRaw`
 		SELECT "category", COUNT(*)::int as count
 		FROM "Feedback"
-		WHERE "createdAt" BETWEEN ${from} AND ${to}
+		WHERE "createdAt" BETWEEN ${rangeFrom} AND ${rangeTo}
 		GROUP BY "category"
-		ORDER BY category ASC;
+		ORDER BY count DESC;
 	`;
 	return categoryCounts as CategoryCount[];
 };
 
 /**
  * 指定された期間内の感情ごとのフィードバック数を取得します。
- * @param {Date} from - 集計を開始する日付。
- * @param {Date} to - 集計を終了する日付。
+ * @param {Date} rangeFrom - 集計を開始する日付。
+ * @param {Date} rangeTo - 集計を終了する日付。
  * @returns {Promise<SentimentCount[]>} 感情ごとのフィードバック数を含むオブジェクトの配列を返します。
  */
 export const getSentimentCounts = async ({
-	from,
-	to,
+	rangeFrom,
+	rangeTo,
 }: {
-	from: Date;
-	to: Date;
+	rangeFrom: Date;
+	rangeTo: Date;
 }): Promise<SentimentCount[]> => {
 	const sentimentCounts = await prisma.$queryRaw`
 		SELECT "sentiment", COUNT(*)::int as count
 		FROM "Feedback"
-		WHERE "createdAt" BETWEEN ${from} AND ${to}
+		WHERE "createdAt" BETWEEN ${rangeFrom} AND ${rangeTo}
 		GROUP BY "sentiment"
 		ORDER BY sentiment ASC;
 	`;
