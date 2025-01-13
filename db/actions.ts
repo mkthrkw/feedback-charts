@@ -1,13 +1,17 @@
 "use server";
 import { prisma } from "@/prisma/prisma";
-import type { Feedback } from "@prisma/client";
-import type { CategoryCount, DailyCount, SentimentCount } from "./type";
+import type {
+	CategoryCount,
+	DailyCount,
+	FeedbackWithStringDate,
+	SentimentCount,
+} from "./type";
 
 /**
  * 指定されたページとページサイズに基づいてフィードバックアイテムを取得します。
  * @param {number} page - 取得するページの番号（1から始まる）。
  * @param {number} pageSize - 1ページあたりのアイテム数。
- * @returns {Promise<Feedback[]>} フィードバックアイテムの配列を返します。
+ * @returns {Promise<FeedbackWithStringDate[]>} フィードバックアイテムの配列を返します。
  */
 export const getFeedbackItems = async ({
 	page,
@@ -15,7 +19,7 @@ export const getFeedbackItems = async ({
 }: {
 	page: number;
 	pageSize: number;
-}): Promise<Feedback[]> => {
+}): Promise<FeedbackWithStringDate[]> => {
 	const feedbacks = await prisma.feedback.findMany({
 		skip: (page - 1) * pageSize,
 		take: pageSize,
@@ -23,7 +27,28 @@ export const getFeedbackItems = async ({
 			createdAt: "desc",
 		},
 	});
-	return feedbacks;
+	const feedbacksWithFormattedDate = feedbacks.map((feedback) => ({
+		...feedback,
+		createdAt: new Intl.DateTimeFormat("ja-JP", {
+			dateStyle: "short",
+			timeStyle: "medium",
+		}).format(feedback.createdAt),
+	}));
+	return feedbacksWithFormattedDate;
+};
+
+/**
+ * ページ数を計算します。
+ * @param {number} pageSize - 1ページあたりのアイテム数。
+ * @returns {Promise<number>} 総ページ数を返します。
+ */
+export const getTotalPages = async ({
+	pageSize,
+}: {
+	pageSize: number;
+}): Promise<number> => {
+	const totalPages = await prisma.feedback.count();
+	return Math.ceil(totalPages / pageSize);
 };
 
 /**
