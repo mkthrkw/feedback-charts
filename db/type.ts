@@ -1,3 +1,9 @@
+import type { Feedback } from "@prisma/client";
+
+export type FeedbackWithStringDate = Omit<Feedback, "createdAt"> & {
+	createdAt: string;
+};
+
 export type DailyCount = {
 	date: Date;
 	count: number;

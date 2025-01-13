@@ -24,8 +24,8 @@ const items = [
     icon: CircleGauge,
   },
   {
-    title: "Data",
-    url: "/data",
+    title: "Feedback",
+    url: "/feedback",
     icon: Database,
   },
 ]
