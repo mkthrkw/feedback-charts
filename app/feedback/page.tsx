@@ -1,4 +1,4 @@
-import { PageHeader } from "@/components/page-header";
+import { PageHeader } from "@/components/layouts/page-header";
 import { getFeedbackItems, getTotalPages } from "@/db/actions";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
