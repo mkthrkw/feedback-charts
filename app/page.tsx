@@ -23,7 +23,7 @@ export default async function Home() {
         <div className="w-full">
           <h2 className="text-xl font-bold">ページ</h2>
           <p>各種分析データのグラフは、<a href="/dashboard" className="text-blue-500">DashBoard</a>ページで確認できます。</p>
-          <p>データは、<a href="/data" className="text-blue-500">Data</a>ページで確認できます。</p>
+          <p>データは、<a href="/feedback" className="text-blue-500">Feedback</a>ページで確認できます。</p>
         </div>
         <div className="w-full">
           <h2 className="text-xl font-bold">サンプルデータについて</h2>
