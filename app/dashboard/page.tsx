@@ -45,16 +45,25 @@ export default async function Page(props: {
         <div className="flex justify-end">
           <DateRangePicker rangeFromString={rangeFromString} rangeToString={rangeToString} />
         </div>
-        <SummaryCards totalCount={String(totalCount)} dailyAverageCount={String(dailyAverageCount)} dailyAverageRating={String(dailyAverageRating)} rangeDays={String(rangeDays)} />
-        <LineChartComponent chartData={dailyCountsAndRating} className="w-full" />
-        <div className="flex flex-wrap lg:flex-nowrap gap-4">
-          <PieChartComponent chartData={categoryCounts} className="w-full" />
-          <RadarChartComponent chartData={sentimentCounts} className="w-full" />
-        </div>
-        <div className="flex flex-wrap lg:flex-nowrap gap-4">
-          <BarChartComponent chartData={generationCounts} className="w-full" />
-          <RadialChartComponent chartData={ratingCounts} className="w-full" />
-        </div>
+        {totalCount > 0 ? (
+          <>
+            <SummaryCards totalCount={String(totalCount)} dailyAverageCount={String(dailyAverageCount)} dailyAverageRating={String(dailyAverageRating)} rangeDays={String(rangeDays)} />
+            <LineChartComponent chartData={dailyCountsAndRating} className="w-full" />
+            <div className="flex flex-wrap lg:flex-nowrap gap-4">
+              <PieChartComponent chartData={categoryCounts} className="w-full" />
+              <RadarChartComponent chartData={sentimentCounts} className="w-full" />
+            </div>
+            <div className="flex flex-wrap lg:flex-nowrap gap-4">
+              <BarChartComponent chartData={generationCounts} className="w-full" />
+              <RadialChartComponent chartData={ratingCounts} className="w-full" />
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center h-full">
+            <h2 className="text-xl font-bold">データがありません</h2>
+            <p>データがありません。</p>
+          </div>
+        )}
       </main>
     </div>
   );
